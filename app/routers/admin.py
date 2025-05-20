@@ -9,7 +9,7 @@ from app.models.records import DidLogRecord, DidWitnessRecord
 from config import settings
 
 router = APIRouter(tags=["Admin"])
-# askar = AskarStorage()
+askar = AskarStorage()
 webvh = WebVhProcessor()
 
 api_key_header = APIKeyHeader(name="x-api-key", auto_error=False)
@@ -34,8 +34,8 @@ async def register_scid(did: str, api_key: str = Security(get_api_key)):
         return JSONResponse(status_code=404, content={})
 
     scid = did.split(":")[2]
-    askar = AskarStorage(scid)
-    await askar.provision()
+    # askar = AskarStorage(scid)
+    # await askar.provision()
 
     log_record = DidLogRecord(
         scid=scid, log_history=webvh.get_log_file(did)

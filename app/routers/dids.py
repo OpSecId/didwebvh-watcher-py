@@ -41,7 +41,7 @@ async def update_cached_scid(did: str):
 async def return_cached_log_file(scid: str):
     """Get cached log file."""
     
-    askar = AskarStorage(scid)
+    # askar = AskarStorage(scid)
     log_record = await askar.fetch("logRecord", scid)
     if not log_record:
         raise HTTPException(status_code=404, detail="Unknown scid value.")
