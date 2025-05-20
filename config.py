@@ -17,6 +17,7 @@ class Settings(BaseSettings):
 
     SECRET_KEY: str = os.environ.get("SECRET_KEY", "s3cret")
 
+    POSTGRES_URI: Union[str, None] = os.getenv("POSTGRES_URI")
     POSTGRES_USER: Union[str, None] = os.getenv("POSTGRES_USER")
     POSTGRES_PASSWORD: Union[str, None] = os.getenv("POSTGRES_PASSWORD")
     POSTGRES_SERVER_NAME: Union[str, None] = os.getenv("POSTGRES_SERVER_NAME")
@@ -28,11 +29,16 @@ class Settings(BaseSettings):
         and POSTGRES_PASSWORD
         and POSTGRES_SERVER_NAME
         and POSTGRES_SERVER_PORT
-    ):
+    ) or POSTGRES_URI:
+        if not POSTGRES_URI:
+            POSTGRES_URI = f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_NAME}:{POSTGRES_SERVER_PORT}/didwebvh-server"
+            
         logging.info(
-            f"Using postgres storage: {POSTGRES_SERVER_NAME}:{POSTGRES_SERVER_PORT}"
+            f"Using postgres storage: {POSTGRES_URI.split('@')[-1]}"
         )
-        ASKAR_DB: str = f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER_NAME}:{POSTGRES_SERVER_PORT}/didwebvh-server"
+        
+        ASKAR_DB: str = POSTGRES_URI
+        
     else:
         logging.info("Using SQLite database")
 
