@@ -1,6 +1,5 @@
-"""Askar plugin for storing and verifying data."""
+"""Askar plugin for storing data."""
 
-import hashlib
 import json
 import logging
 
@@ -13,20 +12,20 @@ from config import settings
 class AskarStorage:
     """Askar storage plugin."""
 
-    def __init__(self):
+    def __init__(self, profile=None):
         """Initialize the Askar storage plugin."""
         self.db = settings.ASKAR_DB
-        self.key = Store.generate_raw_key(
-            hashlib.md5(settings.SECRET_KEY.encode()).hexdigest()
-        )
+        self.profile = profile
 
-    async def provision(self, recreate=False):
-        """Provision the Askar storage."""
-        await Store.provision(self.db, "raw", self.key, recreate=recreate)
+    async def provision(self, key_type="none", recreate=False):
+        """Provision an Askar store."""
+        
+        await Store.provision(self.db, key_type, profile=self.profile, recreate=recreate)
 
-    async def open(self):
-        """Open the Askar storage."""
-        return await Store.open(self.db, "raw", self.key)
+    async def open(self, key_type="none"):
+        """Open an Askar store."""
+        
+        return await Store.open(self.db, key_type, profile=self.profile)
 
     async def fetch(self, category: str, data_key: str) -> dict | None:
         """Fetch data from the store."""

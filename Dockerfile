@@ -1,4 +1,4 @@
-FROM python:3.13-alpine
+FROM python:3.13-slim
 
 WORKDIR /fastapi
 
@@ -10,7 +10,7 @@ COPY poetry.lock pyproject.toml ./
 
 RUN pip install --upgrade pip
 RUN pip install poetry
-RUN poetry install
+RUN poetry install -v
 
 COPY app ./app
 COPY config.py main.py ./
