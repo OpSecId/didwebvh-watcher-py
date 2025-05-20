@@ -40,12 +40,12 @@ async def register_scid(did: str, api_key: str = Security(get_api_key)):
     log_record = DidLogRecord(
         scid=scid, log_history=webvh.get_log_file(did)
     ).model_dump()
-    await askar.store("logRecord", scid, log_record)
+    await askar.store("logRecord", scid, log_record, {"scid": scid})
 
     witness_record = DidWitnessRecord(
         scid=scid, witness_file=webvh.get_witness_file(did)
     ).model_dump()
-    await askar.store("witnessRecord", scid, witness_record)
+    await askar.store("witnessRecord", scid, witness_record, {"scid": scid})
 
     return JSONResponse(status_code=202, content={})
 

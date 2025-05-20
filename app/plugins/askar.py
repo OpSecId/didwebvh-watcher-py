@@ -12,20 +12,21 @@ from config import settings
 class AskarStorage:
     """Askar storage plugin."""
 
-    def __init__(self, profile="default"):
+    def __init__(self, profile=None):
         """Initialize the Askar storage plugin."""
         self.db = settings.ASKAR_DB
-        self.profile = profile
+        self.client_profile = profile
+        self.default_profile = "default"
 
     async def provision(self, key_type="none", recreate=False):
         """Provision an Askar store."""
         
-        await Store.provision(self.db, key_type, profile=self.profile, recreate=recreate)
+        await Store.provision(self.db, key_type, profile=self.default_profile, recreate=recreate)
 
     async def open(self, key_type="none"):
         """Open an Askar store."""
         
-        return await Store.open(self.db, key_type, profile=self.profile)
+        return await Store.open(self.db, key_type, profile=self.default_profile)
 
     async def fetch(self, category: str, data_key: str) -> dict | None:
         """Fetch data from the store."""
