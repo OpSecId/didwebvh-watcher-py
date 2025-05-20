@@ -12,7 +12,7 @@ from config import settings
 class AskarStorage:
     """Askar storage plugin."""
 
-    def __init__(self, profile=None):
+    def __init__(self, profile="default"):
         """Initialize the Askar storage plugin."""
         self.db = settings.ASKAR_DB
         self.profile = profile

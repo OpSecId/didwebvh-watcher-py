@@ -9,7 +9,7 @@ from app.models.records import DidLogRecord, DidWitnessRecord
 from config import settings
 
 router = APIRouter(tags=["Admin"])
-askar = AskarStorage()
+# askar = AskarStorage()
 webvh = WebVhProcessor()
 
 api_key_header = APIKeyHeader(name="x-api-key", auto_error=False)
@@ -34,6 +34,8 @@ async def register_scid(did: str, api_key: str = Security(get_api_key)):
         return JSONResponse(status_code=404, content={})
 
     scid = did.split(":")[2]
+    askar = AskarStorage(scid)
+    await askar.provision()
 
     log_record = DidLogRecord(
         scid=scid, log_history=webvh.get_log_file(did)
@@ -51,6 +53,8 @@ async def register_scid(did: str, api_key: str = Security(get_api_key)):
 @router.delete("/log")
 async def delete_scid(scid: str, api_key: str = Security(get_api_key)):
     """Remove scid from watchlist and remove all associated resources."""
+    
+    askar = AskarStorage(scid)
 
     await askar.remove("logRecord", scid)
     await askar.remove("witnessRecord", scid)
@@ -64,6 +68,8 @@ async def delete_cached_resource(
     scid: str, resourcePath: str, api_key: str = Security(get_api_key)
 ):
     """Remove cached resource."""
+    
+    askar = AskarStorage(scid)
 
     resource_id = f"{scid}{resourcePath}"
     await askar.remove("resourceRecord", resource_id)
